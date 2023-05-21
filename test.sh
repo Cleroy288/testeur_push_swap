@@ -161,8 +161,7 @@ commands=(
 "./push_swap  \"\" \"\" \"\""
 "./push_swap"
 "./push_swap  \"\""
-"--track-origins=yes --leak-check=full -s ./push_swap 900 56 43 -100 | ./checker_Mac 900 56 43 -100"
-"--track-origins=yes --leak-check=full -s ./push_swap"
+"--track-origins=yes --leaks-check=full -s .push_swap 900 56 43 -100"
 "--track-origins=yes --leak-check=full -s ./push_swap \"\" \"\" \"\""
 "--track-origins=yes --leak-check=full -s ./push_swap \"\""
 "--track-origins=yes --leak-check=full -s ./push_swap 2147483648 2147483647 | ./checker_Mac 2147483648 2147483647"
@@ -182,3 +181,42 @@ for cmd in "${commands[@]}"; do
     # Clear the log_valgrind file for the next command
     > log_valgrind
 done
+
+make clean
+
+
+
+function executer_et_afficher {
+    # Extraire la partie de la commande après './a.out'
+    valeurs=$(echo "$1" | cut -d '|' -f 2)
+
+    # Afficher les valeurs en mauve
+    printf "\033[35m%s\033[0m\n" "$valeurs"
+
+    # Exécuter la commande et capturer la sortie et les erreurs
+    output=$(eval $1 2>&1)
+
+    # Vérifier si la sortie est vide
+    if [[ -z "$output" ]]; then
+        echo "RIEN"
+    else
+        echo "$output"
+    fi
+}
+
+
+gcc -Wall -Wextra -Werror -fsanitize=address -g algo/*.c ft_change_val_to_tab_rank.c ft_free_and_exit.c ft_nb_of_nb.c lib/libft.a main.c operations_ch/*.c parsing/*.c
+
+executer_et_afficher "./a.out '' '' # vide"
+executer_et_afficher "./a.out 2147483648 2147483647 # + int max positif"
+executer_et_afficher "./a.out -2147483649 2147483647 # - int min négatif"
+executer_et_afficher "./a.out 1 2 2 2 2 # doubles"
+executer_et_afficher "./a.out 1 # une valeur"
+executer_et_afficher "./a.out # rien"
+executer_et_afficher "./a.out 1 2 3 4 5 6 7 8 9 10 # deja trié"
+executer_et_afficher "./a.out 21 a18 # chiffres + lettres"
+executer_et_afficher "./a.out a b c # que des lettres"
+
+rm -rf a.out
+rm -rf a.out.dSYM
+rm -rf push_swap.dSYM 
