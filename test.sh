@@ -152,18 +152,18 @@ done
 ################################################comparer et chercher les login 
 
 # Obtenez le login à partir du fichier main.c
-#login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' main.c)
+login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' main.c)
 
 # Chercher récursivement dans tous les fichiers .c et .h
-#for file in $(find . -type f \( -name "*.c" -or -name "*.h" \) -not -path "./leaks_checker/*" -not -name "main.c"); do
+for file in $(find . -type f \( -name "*.c" -or -name "*.h" \) -not -path "./leaks_checker/*" -not -name "main.c"); do
     # Obtenez le login à partir du fichier actuel
-    #file_login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' "$file")
+    file_login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' "$file")
 
     # Vérifie si le login est le même
-    #if [ "$login" != "$file_login" ]; then
-        #echo "Attention: Le login est différent dans le fichier $file"
-    #fi
-#done
+    if [ "$login" != "$file_login" ]; then
+        echo "Attention: Le login est différent dans le fichier $file"
+    fi
+done
 #######################################################################
 
 ################################################serie de test aec valgrind
@@ -184,7 +184,7 @@ commands=(
 "./push_swap  \"\" \"\" \"\""
 "./push_swap"
 "./push_swap  \"\""
-"--track-origins=yes --leaks-check=full -s ./push_swap 900 56 43 -100"
+"--track-origins=yes --leaks-check=full -s .push_swap 900 56 43 -100"
 "--track-origins=yes --leak-check=full -s ./push_swap \"\" \"\" \"\""
 "--track-origins=yes --leak-check=full -s ./push_swap \"\""
 "--track-origins=yes --leak-check=full -s ./push_swap 2147483648 2147483647 | ./checker_Mac 2147483648 2147483647"
@@ -204,8 +204,6 @@ for cmd in "${commands[@]}"; do
     # Clear the log_valgrind file for the next command
     > log_valgrind
 done
-
-
 
 
 function executer_et_afficher {

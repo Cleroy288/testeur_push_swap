@@ -6,6 +6,6 @@
 
 # le script ruby cree des nombres de maniere aléatoire 
 # sois sur d'avoir valgrind sur ton pc
-# le script checher l'inclusion de stdio.h et printf dans tout t'es fichiers 
+# le script cherche l'inclusion de stdio.h et printf dans tout t'es fichiers 
 # 2 ## quand tu as terminé tu peux exécuter la commande ./test.sh bye 
 # ==> cette commande supprime le scripte et tout ce qu'il crée 
