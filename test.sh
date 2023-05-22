@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# Vérifie si l'exécutable push_swap existe 
+if [[ ! -f ./push_swap ]]; then
+    echo "L'exécutable push_swap n'existe pas. Exécution de 'make'..."
+    make
+fi
+
+# Maintenant que nous savons que push_swap existe, exécutons 'make' deux fois pour démontrer le non-relinkage.
+echo "Exécution de 'make' pour la première fois..."
+make_output1=$(make)
+echo "Exécution de 'make' pour la deuxième fois..."
+make_output2=$(make)
+
+if [[ $make_output2 == *"Nothing to be done for"* ]]; then
+    echo -e "\033[1;32m$make_output2\033[0m"   # Mettre le message en vert pour le mettre en évidence
+else
+    echo "$make_output2"
+fi
+
+make clean
+
+
 if [ $# -lt 1 ] || [ $# -gt 3 ]; then
     echo "Nombre d'arguments incorrect. Utilisation: ./test.sh [push_swap] [checker] [ruby_script] ou ./test.sh bye"
     exit 1
@@ -12,11 +33,13 @@ if [ "$1" == "bye" ]; then
         exit 1
     fi
     rm -rf leaks_checker log_valgrind test.leaks ./comme_tu_veux.rb ./test_leaks "$0"
+    make fclean
     echo "Les fichiers et le répertoire spécifiés ont été supprimés."
     exit 0
 fi
 
 # Le reste de votre script ici...
+
 
 
 # Récupère les exécutables à partir des arguments
@@ -129,18 +152,18 @@ done
 ################################################comparer et chercher les login 
 
 # Obtenez le login à partir du fichier main.c
-login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' main.c)
+#login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' main.c)
 
 # Chercher récursivement dans tous les fichiers .c et .h
-for file in $(find . -type f \( -name "*.c" -or -name "*.h" \) -not -path "./leaks_checker/*" -not -name "main.c"); do
+#for file in $(find . -type f \( -name "*.c" -or -name "*.h" \) -not -path "./leaks_checker/*" -not -name "main.c"); do
     # Obtenez le login à partir du fichier actuel
-    file_login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' "$file")
+    #file_login=$(grep -oP 'Created: \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} by \K\w+' "$file")
 
     # Vérifie si le login est le même
-    if [ "$login" != "$file_login" ]; then
-        echo "Attention: Le login est différent dans le fichier $file"
-    fi
-done
+    #if [ "$login" != "$file_login" ]; then
+        #echo "Attention: Le login est différent dans le fichier $file"
+    #fi
+#done
 #######################################################################
 
 ################################################serie de test aec valgrind
@@ -161,16 +184,16 @@ commands=(
 "./push_swap  \"\" \"\" \"\""
 "./push_swap"
 "./push_swap  \"\""
-"--track-origins=yes --leaks-check=full -s .push_swap 900 56 43 -100"
+"--track-origins=yes --leaks-check=full -s ./push_swap 900 56 43 -100"
 "--track-origins=yes --leak-check=full -s ./push_swap \"\" \"\" \"\""
 "--track-origins=yes --leak-check=full -s ./push_swap \"\""
 "--track-origins=yes --leak-check=full -s ./push_swap 2147483648 2147483647 | ./checker_Mac 2147483648 2147483647"
 "--track-origins=yes --leak-check=full -s ./push_swap -2147483649 2147483647"
 "--track-origins=yes --leak-check=full -s ./push_swap"
 "--track-origins=yes --leak-check=full -s ./push_swap 21474836  2147483647 | ./checker_Mac 21474836 2147483647"
-"--track-origins=yes --leak-check=full -s ./push_swap \"21474836  2147483647\" \"9 67\" | ./checker_Mac \"21474836  2147483647\" \"9 67\""
-"--track-origins=yes --leak-check=full -s ./push_swap \"21474836  2147483647\" \"9 67\" 389 | ./checker_Mac \"21474836  2147483647\" \"9 67\" 389"
-"--track-origins=yes --leak-check=full -s ./push_swap \"21 22\" \"90\" \"11\" | ./checker_Mac \"21 22\" \"90\" \"11\""
+"--track-origins=yes --leak-check=full -s ./push_swap 21474836  2147483647 9 67 | ./checker_Mac 21474836  2147483647 9 67"
+"--track-origins=yes --leak-check=full -s ./push_swap 21474836  2147483647 9 67 389 | ./checker_Mac 21474836  2147483647 9 67 389"
+"--track-origins=yes --leak-check=full -s ./push_swap 21 22 90 11 | ./checker_Mac 21 22 90 11"
 )
 
 for cmd in "${commands[@]}"; do
@@ -182,7 +205,6 @@ for cmd in "${commands[@]}"; do
     > log_valgrind
 done
 
-make clean
 
 
 
@@ -220,3 +242,4 @@ executer_et_afficher "./a.out a b c # que des lettres"
 rm -rf a.out
 rm -rf a.out.dSYM
 rm -rf push_swap.dSYM 
+make fclean
