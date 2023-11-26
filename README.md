@@ -1,11 +1,25 @@
-# testeur_push_swap
+# Testeur Push Swap
 
-# 1 ## faire un MAKE et avoir un exécutable
-# ==> pour exécuter le script tu lance la commande suivante ==> ./test.sh push_swap checker_Mac comme_tu_veux.rb
-# ==>  1 le scripte, 2 lexécutable, 3 le checkeur, 4 le script en ruby 
+## Introduction
+Ce projet est un testeur pour le projet Push Swap. Il utilise un script Ruby pour générer des nombres de manière aléatoire et vérifier la sortie de l'exécutable Push Swap.
 
-# le script ruby cree des nombres de maniere aléatoire 
-# sois sur d'avoir valgrind sur ton pc
-# le script cherche l'inclusion de stdio.h et printf dans tout t'es fichiers 
-# 2 ## quand tu as terminé tu peux exécuter la commande ./test.sh bye 
-# ==> cette commande supprime le scripte et tout ce qu'il crée 
+## Utilisation
+Pour utiliser ce testeur :
+
+1. Exécutez la commande `make` pour compiler et obtenir l'exécutable.
+2. Lancez le testeur avec la commande suivante : ./test.sh push_swap checker_Mac comme_tu_veux.rb
+
+Où :
+- `test.sh` est le script de test,
+- `push_swap` est votre exécutable,
+- `checker_Mac` est le vérificateur,
+- `comme_tu_veux.rb` est le script Ruby pour générer des nombres.
+
+Assurez-vous d'avoir `valgrind` installé sur votre système pour une analyse mémoire détaillée. Le script vérifie également l'inclusion de `stdio.h` et l'utilisation de `printf` dans tous vos fichiers.
+
+## Nettoyage
+Après avoir terminé les tests, vous pouvez exécuter la commande suivante pour nettoyer : ./test.sh bye
+
+Cette commande supprime le script et tous les fichiers qu'il a créés.
+
+
