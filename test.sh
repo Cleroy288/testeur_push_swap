@@ -38,8 +38,6 @@ if [ "$1" == "bye" ]; then
     exit 0
 fi
 
-# Le reste de votre script ici...
-
 
 
 # Récupère les exécutables à partir des arguments
